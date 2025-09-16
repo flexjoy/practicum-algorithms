@@ -15,6 +15,7 @@ public class D {
     private static List<Integer> twoSum(List<Integer> arr, int targetSum) {
         var result = new ArrayList<Integer>();
         var list = arr.stream().distinct().collect(Collectors.toList());
+        boolean found = false;
 
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = i + 1; j < list.size(); j++) {
@@ -23,8 +24,13 @@ public class D {
                 if (sum == targetSum) {
                     result.add(list.get(i));
                     result.add(list.get(j));
+                    found = true;
                     break;
                 }
+            }
+
+            if (found) {
+                break;
             }
         }
 
