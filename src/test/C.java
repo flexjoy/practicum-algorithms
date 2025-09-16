@@ -1,42 +1,45 @@
 package test;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class C {
-    private static Double[] movingAverage(int n, int[] arr, int windowSize) {
-        var result = new Double[n - windowSize + 1];
+    private static List<Double> movingAverage(int n, List<Integer> arr, int windowSize) {
+        var result = new ArrayList<Double>();
         long currentSum = 0;
 
         for (int i = 0; i < windowSize; i++) {
-            currentSum += arr[i];
+            currentSum += arr.get(i);
         }
 
-        result[0] = (double) currentSum / windowSize;
+        result.add((double) currentSum / windowSize);
 
         for (int i = windowSize; i < n; i++) {
-            currentSum += arr[i] - arr[i - windowSize];
-            result[i - windowSize + 1] = (double) currentSum / windowSize;
+            currentSum += arr.get(i) - arr.get(i - windowSize);
+            result.add((double) currentSum / windowSize);
         }
 
         return result;
     }
 
     public static void main(String[] args) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+        try (var reader = new BufferedReader(new InputStreamReader(System.in));
+             var writer = new BufferedWriter(new OutputStreamWriter(System.out))) {
             int n = readInt(reader);
-            var arr = readData(reader);
+            var arr = readList(reader);
             int windowSize = readInt(reader);
             var result = movingAverage(n, arr, windowSize);
 
-            var builder = new StringBuilder();
-            for (Double v : result) {
-                builder
-                        .append(v)
-                        .append(" ");
+            for (double elem : result) {
+                writer.write(elem + " ");
             }
-            System.out.println(builder);
         }
     }
 
@@ -44,14 +47,9 @@ public class C {
         return Integer.parseInt(reader.readLine());
     }
 
-    private static int[] readData(BufferedReader reader) throws IOException {
-        var strings = reader.readLine().split(" ");
-        var arr = new int[strings.length];
-
-        for (int i = 0; i < strings.length; i++) {
-            arr[i] = Integer.parseInt(strings[i]);
-        }
-
-        return arr;
+    private static List<Integer> readList(BufferedReader reader) throws IOException {
+        return Arrays.stream(reader.readLine().split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 }
